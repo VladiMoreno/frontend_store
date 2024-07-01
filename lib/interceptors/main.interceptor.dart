@@ -14,6 +14,8 @@ class MainInterceptor extends Interceptor {
         cancelToken.cancel('Solicitud cancelada debido a tiempo de espera.');
       }
     });
+
+    super.onRequest(options, handler);
   }
 
   @override
@@ -73,16 +75,6 @@ class MainInterceptor extends Interceptor {
           );
           super.onError(error, handler);
           break;
-        default:
-          super.onError(
-            DioException(
-              message: "Ah ocurrido un error en la respuesta del servidor",
-              response: err.response,
-              type: DioExceptionType.unknown,
-              requestOptions: RequestOptions(),
-            ),
-            handler,
-          );
       }
     } catch (e) {
       super.onError(

@@ -1,7 +1,7 @@
 import 'general.model.dart';
 
 class SuccessModel extends GeneralModel {
-  List<Map<String, dynamic>> data;
+  dynamic data;
 
   SuccessModel({
     required super.statusCode,
