@@ -1,6 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:frontend_store/common/styles/custom_text.style.dart';
 import 'package:frontend_store/common/widgets/loading.view.dart';
 import 'package:frontend_store/config/env.config.dart';
 import 'package:frontend_store/utils/get_size.util.dart';
@@ -57,14 +56,8 @@ class _HomeViewState extends State<HomeView> {
                             children: [
                               SizedBox(
                                 width: GetSize.width * .2,
-                                child: AutoSizeText(
-                                  info['name'],
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    decoration: TextDecoration.none,
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                  ),
+                                child: CustomText(
+                                  text: info['name'],
                                 ),
                               ),
                               const SizedBox(height: 15),

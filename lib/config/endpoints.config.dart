@@ -7,3 +7,5 @@ const getProducts = 'products';
 const addProducts = 'products';
 const getDetailProduct = 'products/{id_product}';
 const updateProduct = 'products/{id_product}';
+//
+const getProductByCode = 'product/{code}';
