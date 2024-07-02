@@ -42,6 +42,15 @@ class _ScannerViewState extends State<ScannerView> {
     });
   }
 
+  finishPurchase() async {
+    await widget.controller.finishPurchase(detalleVenta);
+
+    setState(() {
+      detalleVenta = [];
+      total = 0.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -122,7 +131,9 @@ class _ScannerViewState extends State<ScannerView> {
                           ),
                           SizedBox(width: GetSize.width * .07),
                           InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              await finishPurchase();
+                            },
                             child: Container(
                               width: GetSize.width * .4,
                               height: 40,
@@ -248,9 +259,10 @@ class _ScannerViewState extends State<ScannerView> {
                             onTap: () {
                               setState(() {
                                 detalleVenta.add(product);
-                                total += double.parse(
-                                  product['sub-total'].toStringAsFixed(2),
-                                );
+                                double subTotal = double.parse(
+                                    product['sub-total'].toString());
+                                total +=
+                                    double.parse(subTotal.toStringAsFixed(2));
                                 product = {};
                                 addingProduct = false;
                               });
