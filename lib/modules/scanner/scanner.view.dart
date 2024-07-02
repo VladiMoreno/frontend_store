@@ -1,13 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend_store/common/styles/custom_text.style.dart';
 import 'package:frontend_store/common/widgets/layout.view.dart';
 import 'package:frontend_store/common/widgets/loading.view.dart';
 import 'package:frontend_store/utils/get_size.util.dart';
 import 'package:get/get.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import 'scanner.controller.dart';
 
@@ -21,7 +19,6 @@ class ScannerView extends StatefulWidget {
 }
 
 class _ScannerViewState extends State<ScannerView> {
-  String scanBarcode = 'Unknown';
   double total = 0.0;
   bool addingProduct = false;
 
@@ -29,29 +26,10 @@ class _ScannerViewState extends State<ScannerView> {
 
   List<Map<String, dynamic>> detalleVenta = [];
 
-  Future<void> scanBarcodeNormal() async {
-    String barcodeScanRes;
-    try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666',
-        'Cancel',
-        true,
-        ScanMode.BARCODE,
-      );
-    } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
-    }
-    if (!mounted) return;
-
-    setState(() {
-      scanBarcode = barcodeScanRes;
-    });
-  }
-
   increaseAmount(Map<String, dynamic> info) {
     setState(() {
       info['amount'] += 1;
-      double subtotal = info['amount'] * info['price'];
+      double subtotal = info['amount'] * double.parse(info['price']);
       info['sub-total'] = double.parse(subtotal.toStringAsFixed(2));
     });
   }
@@ -59,7 +37,7 @@ class _ScannerViewState extends State<ScannerView> {
   decreaseAmount(Map<String, dynamic> info) {
     setState(() {
       info['amount'] -= 1;
-      double subtotal = info['amount'] * info['price'];
+      double subtotal = info['amount'] * double.parse(info['price']);
       info['sub-total'] = double.parse(subtotal.toStringAsFixed(2));
     });
   }
@@ -76,22 +54,26 @@ class _ScannerViewState extends State<ScannerView> {
                   children: [
                     const SizedBox(height: 25),
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
                         setState(() {
                           addingProduct = true;
                         });
-                        if (kIsWeb) {
+                        var res = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SimpleBarcodeScannerPage(),
+                            ));
+
+                        if (res is String) {
+                          final response =
+                              await widget.controller.getInformationByCode(
+                            res,
+                          );
+
                           setState(() {
-                            product = {
-                              "id": 1,
-                              "name": "Producto 1",
-                              "price": 4.99,
-                              "amount": 1,
-                              "sub-total": 4.99,
-                            };
+                            product = response;
                           });
-                        } else {
-                          scanBarcodeNormal();
                         }
                       },
                       child: Container(
@@ -115,43 +97,93 @@ class _ScannerViewState extends State<ScannerView> {
                     ),
                     const SizedBox(height: 30),
                     if (!addingProduct && detalleVenta.isNotEmpty) ...[
-                      Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {},
-                                child: Container(
-                                  width: GetSize.width * .4,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: const CustomText(text: 'Cancelar'),
-                                ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                product = {};
+                                detalleVenta = [];
+                                total = 0.0;
+                              });
+                            },
+                            child: Container(
+                              width: GetSize.width * .4,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                              SizedBox(width: GetSize.width * .07),
-                              InkWell(
-                                onTap: () {},
-                                child: Container(
-                                  width: GetSize.width * .4,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child:
-                                      const CustomText(text: 'Finalizar venta'),
-                                ),
+                              alignment: Alignment.center,
+                              child: const CustomText(text: 'Cancelar'),
+                            ),
+                          ),
+                          SizedBox(width: GetSize.width * .07),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: GetSize.width * .4,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                            ],
+                              alignment: Alignment.center,
+                              child: const CustomText(text: 'Finalizar venta'),
+                            ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 20),
+                      Column(
+                        children: List.generate(detalleVenta.length, (index) {
+                          final info = detalleVenta[index];
+
+                          return Container(
+                            width: GetSize.width * .9,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const CustomText(text: 'Producto: '),
+                                    CustomText(text: info['name']),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const CustomText(text: 'Amount: '),
+                                    CustomText(text: info['amount'].toString()),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const CustomText(text: 'Sub Total: '),
+                                    CustomText(
+                                      text: '\$${info['sub-total'].toString()}',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
                       ),
                     ] else if (product.isNotEmpty) ...[
                       Column(
@@ -216,8 +248,11 @@ class _ScannerViewState extends State<ScannerView> {
                             onTap: () {
                               setState(() {
                                 detalleVenta.add(product);
-                                total += product['price'];
+                                total += double.parse(
+                                  product['sub-total'].toStringAsFixed(2),
+                                );
                                 product = {};
+                                addingProduct = false;
                               });
                             },
                             child: Container(
@@ -236,6 +271,7 @@ class _ScannerViewState extends State<ScannerView> {
                             onTap: () {
                               setState(() {
                                 product = {};
+                                addingProduct = false;
                               });
                             },
                             child: Container(

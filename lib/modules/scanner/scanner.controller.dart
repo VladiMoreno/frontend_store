@@ -9,7 +9,12 @@ class ScannerController extends GetxController {
 
   getInformationByCode(code) async {
     try {
-      await service.getInformationByCode(code);
+      final response = await service.getInformationByCode(code);
+
+      response['amount'] = 1;
+      response['sub-total'] = response['price'];
+
+      return response;
     } catch (e) {
       isLoading.value = false;
     } finally {
