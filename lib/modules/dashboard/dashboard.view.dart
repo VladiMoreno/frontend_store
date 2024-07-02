@@ -23,24 +23,24 @@ class _DashboardViewState extends State<DashboardView> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            width: GetSize.width * .7,
-            height: GetSize.height * .3,
-            margin: EdgeInsets.symmetric(
-              horizontal: GetSize.width * .05,
-              vertical: GetSize.height * .05,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: Colors.grey,
+          InkWell(
+            onTap: () {
+              Get.toNamed('/products');
+            },
+            child: Container(
+              width: GetSize.width * .7,
+              height: GetSize.height * .3,
+              margin: EdgeInsets.symmetric(
+                horizontal: GetSize.width * .05,
+                vertical: GetSize.height * .05,
               ),
-            ),
-            alignment: Alignment.center,
-            child: InkWell(
-              onTap: () {
-                Get.toNamed('/products');
-              },
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              alignment: Alignment.center,
               child: const CustomText(text: 'Gestión de productos'),
             ),
           ),
@@ -60,21 +60,26 @@ class _DashboardViewState extends State<DashboardView> {
             alignment: Alignment.center,
             child: const CustomText(text: 'Gestión de usuarios'),
           ),
-          Container(
-            width: GetSize.width * .7,
-            height: GetSize.height * .3,
-            margin: EdgeInsets.symmetric(
-              horizontal: GetSize.width * .05,
-              vertical: GetSize.height * .05,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: Colors.grey,
+          InkWell(
+            onTap: () {
+              Get.toNamed('/scanner');
+            },
+            child: Container(
+              width: GetSize.width * .7,
+              height: GetSize.height * .3,
+              margin: EdgeInsets.symmetric(
+                horizontal: GetSize.width * .05,
+                vertical: GetSize.height * .05,
               ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: const CustomText(text: 'Realizar una compra'),
             ),
-            alignment: Alignment.center,
-            child: const CustomText(text: 'Realizar una compra'),
           ),
         ],
       ),

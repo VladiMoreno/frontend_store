@@ -11,7 +11,7 @@ class ScannerService extends GetxService {
   Future getInformationByCode(code) async {
     try {
       final params = <String, dynamic>{
-        'code': code,
+        'barcode': code,
       };
 
       String finalUrl = generateUrl(getProductByCode, params);

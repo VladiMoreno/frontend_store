@@ -5,7 +5,9 @@ import 'package:frontend_store/common/widgets/layout.view.dart';
 import 'package:frontend_store/common/widgets/loading.view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend_store/config/env.config.dart';
+import 'package:frontend_store/constants/type_notification.constants.dart';
 import 'package:frontend_store/utils/get_size.util.dart';
+import 'package:frontend_store/utils/notifications.util.dart';
 import 'package:get/get.dart';
 
 import 'product.controller.dart';
@@ -22,8 +24,24 @@ class ProductView extends StatefulWidget {
 class _ProductViewState extends State<ProductView> {
   String action = 'View';
 
-  manejoProducto(Map<String, dynamic> info) async {
+  agregarProducto(Map<String, dynamic> info) async {
+    await widget.controller.agregarProducto(info);
+  }
+
+  actualizarProducto(Map<String, dynamic> info) async {
     await widget.controller.actualizarProducto(info);
+  }
+
+  eliminarProducto(String id) async {
+    Notifications(
+      typeProcess: TypeNotification.confirmNotification,
+      typeNotification: 'warning',
+      titleNotification: '¿Está seguro?',
+      textNotification: 'Está seguro de eliminar el producto ?',
+      functionToDo: () async {
+        await widget.controller.eliminarProducto(id);
+      },
+    );
   }
 
   @override
@@ -32,97 +50,162 @@ class _ProductViewState extends State<ProductView> {
       () => widget.controller.isLoading.isTrue
           ? const LoadingView()
           : LayoutView(
-              screenToShow: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: List.generate(
-                  widget.controller.info.length,
-                  (index) {
-                    final info = widget.controller.info[index];
-
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 20,
+              screenToShow: Container(
+                margin: const EdgeInsets.symmetric(vertical: 15),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 20,
+                        bottom: 20,
                       ),
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Colors.grey,
+                      padding: const EdgeInsets.only(left: 20),
+                      width: GetSize.width,
+                      height: 25,
+                      alignment: Alignment.centerLeft,
+                      child: InkWell(
+                        onTap: () {
+                          Get.toNamed('/dashboard');
+                        },
+                        child: const Row(
+                          children: [
+                            FaIcon(FontAwesomeIcons.arrowLeftLong),
+                            SizedBox(width: 15),
+                            CustomText(text: 'Volver'),
+                          ],
                         ),
                       ),
-                      child: Column(
-                        children: [
-                          const CustomText(text: 'Nombre del producto:'),
-                          CustomText(text: info['name']),
-                          const SizedBox(height: 10),
-                          const CustomText(text: 'Precio del producto:'),
-                          CustomText(text: '\$${info['price'].toString()}'),
-                          const SizedBox(height: 25),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    barrierColor:
-                                        const Color.fromARGB(115, 0, 0, 0),
-                                    builder: (BuildContext context) {
-                                      return ModalProduct(
-                                        action: 'view',
-                                        info: info,
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const FaIcon(
-                                  FontAwesomeIcons.eye,
-                                  color: Colors.blue,
-                                  size: 30,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    barrierColor:
-                                        const Color.fromARGB(115, 0, 0, 0),
-                                    builder: (BuildContext context) {
-                                      return ModalProduct(
-                                        action: 'update',
-                                        info: info,
-                                        function: manejoProducto,
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const FaIcon(
-                                  FontAwesomeIcons.penToSquare,
-                                  color: Colors.green,
-                                  size: 30,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {},
-                                child: const FaIcon(
-                                  FontAwesomeIcons.trashCan,
-                                  color: Colors.red,
-                                  size: 30,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          barrierColor: const Color.fromARGB(115, 0, 0, 0),
+                          builder: (BuildContext context) {
+                            return ModalProduct(
+                              action: 'add',
+                              info: const {},
+                              function: agregarProducto,
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        width: GetSize.width * .75,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CustomText(text: 'Agregar nuevo producto'),
+                            FaIcon(FontAwesomeIcons.squarePlus)
+                          ],
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                    const SizedBox(height: 25),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: List.generate(
+                        widget.controller.info.length,
+                        (index) {
+                          final info = widget.controller.info[index];
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 20,
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                const CustomText(text: 'Nombre del producto:'),
+                                CustomText(text: info['name']),
+                                const SizedBox(height: 10),
+                                const CustomText(text: 'Precio del producto:'),
+                                CustomText(
+                                    text: '\$${info['price'].toString()}'),
+                                const SizedBox(height: 25),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          barrierColor: const Color.fromARGB(
+                                              115, 0, 0, 0),
+                                          builder: (BuildContext context) {
+                                            return ModalProduct(
+                                              action: 'view',
+                                              info: info,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: const FaIcon(
+                                        FontAwesomeIcons.eye,
+                                        color: Colors.blue,
+                                        size: 30,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          barrierColor: const Color.fromARGB(
+                                              115, 0, 0, 0),
+                                          builder: (BuildContext context) {
+                                            return ModalProduct(
+                                              action: 'update',
+                                              info: info,
+                                              function: actualizarProducto,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: const FaIcon(
+                                        FontAwesomeIcons.penToSquare,
+                                        color: Colors.green,
+                                        size: 30,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        eliminarProducto(info['id'].toString());
+                                      },
+                                      child: const FaIcon(
+                                        FontAwesomeIcons.trashCan,
+                                        color: Colors.red,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -161,9 +244,11 @@ class ModalProduct extends StatelessWidget {
     }
 
     setParameters() {
-      idController.text = info['id'].toString();
-      nameController.text = info['name'];
-      priceController.text = info['price'].toString();
+      if (action != 'add') {
+        idController.text = info['id'].toString();
+        nameController.text = info['name'];
+        priceController.text = info['price'].toString();
+      }
     }
 
     setParameters();
@@ -172,9 +257,10 @@ class ModalProduct extends StatelessWidget {
       child: Container(
         constraints: BoxConstraints(
           minWidth: GetSize.width,
-          maxHeight: GetSize.height * .8,
+          maxHeight:
+              action == 'add' ? GetSize.height * .6 : GetSize.height * .8,
         ),
-        alignment: Alignment.topCenter,
+        alignment: action == 'add' ? Alignment.center : Alignment.topCenter,
         child: SingleChildScrollView(
           child: Form(
             key: formKey,
@@ -192,15 +278,17 @@ class ModalProduct extends StatelessWidget {
                 if (action == 'add') ...[
                   const CustomText(text: 'Añadir producto')
                 ],
-                const SizedBox(height: 15),
-                TextInput(
-                  width: GetSize.width * .65,
-                  labelText: 'ID',
-                  enabled: false,
-                  controller: idController,
-                  currentFocus: idNode,
-                  nextFocus: nameNode,
-                ),
+                if (action != 'add') ...[
+                  const SizedBox(height: 15),
+                  TextInput(
+                    width: GetSize.width * .65,
+                    labelText: 'ID',
+                    enabled: false,
+                    controller: idController,
+                    currentFocus: idNode,
+                    nextFocus: nameNode,
+                  ),
+                ],
                 const SizedBox(height: 15),
                 TextInput(
                   width: GetSize.width * .65,
@@ -219,9 +307,9 @@ class ModalProduct extends StatelessWidget {
                   currentFocus: priceNode,
                   nextFocus: priceNode,
                 ),
-                const SizedBox(height: 15),
-                const CustomText(text: 'Código de barra'),
                 if (action != 'add') ...[
+                  const SizedBox(height: 15),
+                  const CustomText(text: 'Código de barra'),
                   const SizedBox(height: 15),
                   Image.network(
                     imageUrl + info['barcode_image_path'],

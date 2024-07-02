@@ -7,15 +7,15 @@ class ErrorModel extends GeneralModel {
   ErrorModel({
     required super.statusCode,
     required super.message,
-    this.errors = const [''],
-    this.error = '',
+    this.errors,
+    this.error,
   });
 
   factory ErrorModel.fromJson(Map<String, dynamic> json) => ErrorModel(
         statusCode: json["statusCode"],
         message: json["message"],
-        errors: json["errors"],
-        error: json["error"],
+        errors: (json["errors"] as List?)?.map((e) => e as String).toList(),
+        error: json["error"] as String?,
       );
 
   @override

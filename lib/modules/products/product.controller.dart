@@ -28,11 +28,35 @@ class ProductController extends GetxController {
     }
   }
 
+  agregarProducto(Map<String, dynamic> info) async {
+    try {
+      isLoading.value = true;
+
+      await service.addProductInformation(info);
+    } catch (e) {
+      isLoading.value = false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   actualizarProducto(Map<String, dynamic> info) async {
     try {
       isLoading.value = true;
 
       await service.updateProductInformation(info);
+    } catch (e) {
+      isLoading.value = false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  eliminarProducto(String id) async {
+    try {
+      isLoading.value = true;
+
+      await service.removeProductInformation(id);
     } catch (e) {
       isLoading.value = false;
     } finally {

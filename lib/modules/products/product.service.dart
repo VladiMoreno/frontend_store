@@ -25,6 +25,23 @@ class ProductService extends GetxService {
     }
   }
 
+  Future addProductInformation(Map<String, dynamic> info) async {
+    try {
+      final response = await apiservice.post(addProducts, data: info);
+
+      SuccessModel successModel = SuccessModel.fromJson(response);
+
+      return successModel.data;
+    } catch (e) {
+      printMessageParam(
+        message:
+            'Error en la función addProductInformation del archivo product.service',
+        param: e,
+      );
+      rethrow;
+    }
+  }
+
   Future updateProductInformation(Map<String, dynamic> info) async {
     try {
       final params = <String, dynamic>{
@@ -42,6 +59,29 @@ class ProductService extends GetxService {
       printMessageParam(
         message:
             'Error en la función updateProductInformation del archivo product.service',
+        param: e,
+      );
+      rethrow;
+    }
+  }
+
+  Future removeProductInformation(String id) async {
+    try {
+      final params = <String, dynamic>{
+        'id_product': id,
+      };
+
+      String finalUrl = generateUrl(removeProduct, params);
+
+      final response = await apiservice.delete(finalUrl);
+
+      SuccessModel successModel = SuccessModel.fromJson(response);
+
+      return successModel.data;
+    } catch (e) {
+      printMessageParam(
+        message:
+            'Error en la función removeProductInformation del archivo product.service',
         param: e,
       );
       rethrow;
