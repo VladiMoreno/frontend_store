@@ -9,9 +9,11 @@ class HomeServices extends GetxService {
 
   Future getBarcodeProducts() async {
     try {
-      SuccessModel response = await apiservice.get(getProducts);
+      final response = await apiservice.get(getProducts);
 
-      return response.data;
+      SuccessModel successModel = SuccessModel.fromJson(response);
+
+      return successModel.data;
     } catch (e) {
       printMessageParam(
         message:

@@ -66,6 +66,15 @@ class MainInterceptor extends Interceptor {
           );
           super.onError(error, handler);
           break;
+        case 409:
+          final error = DioException(
+            message: errorModel.error,
+            response: err.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: RequestOptions(),
+          );
+          super.onError(error, handler);
+          break;
         case 422:
           final error = DioException(
             error: errorModel.errors,

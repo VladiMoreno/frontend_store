@@ -12,6 +12,7 @@ class APIService {
 
     dio.options.headers = {
       'Content-Type': 'application/json',
+      'Accept': 'application/json, image/png',
     };
   }
 

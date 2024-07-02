@@ -8,13 +8,16 @@ class HomeController extends GetxController {
   final HomeServices services = HomeServices();
 
   var isLoading = RxBool(false);
+  var info = RxList([]);
 
   @override
   void onReady() async {
     try {
       isLoading.value = true;
 
-      await services.getBarcodeProducts();
+      final response = await services.getBarcodeProducts();
+
+      info.value = response;
 
       super.onReady();
     } catch (e) {
