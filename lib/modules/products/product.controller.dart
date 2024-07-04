@@ -28,11 +28,14 @@ class ProductController extends GetxController {
     }
   }
 
-  agregarProducto(Map<String, dynamic> info) async {
+  agregarProducto(Map<String, dynamic> newProduct) async {
     try {
       isLoading.value = true;
 
-      await service.addProductInformation(info);
+      final response = await service.addProductInformation(newProduct);
+
+      info.insert(0, response);
+      info.refresh();
     } catch (e) {
       isLoading.value = false;
     } finally {
@@ -40,11 +43,20 @@ class ProductController extends GetxController {
     }
   }
 
-  actualizarProducto(Map<String, dynamic> info) async {
+  actualizarProducto(Map<String, dynamic> updatedInfo) async {
     try {
       isLoading.value = true;
 
-      await service.updateProductInformation(info);
+      final response = await service.updateProductInformation(updatedInfo);
+
+      for (var element in info) {
+        if (element['id'] == response['id']) {
+          element['name'] = response['name'];
+          element['price'] = response['price'];
+        }
+      }
+
+      info.refresh();
     } catch (e) {
       isLoading.value = false;
     } finally {
@@ -57,6 +69,8 @@ class ProductController extends GetxController {
       isLoading.value = true;
 
       await service.removeProductInformation(id);
+
+      info.removeWhere((element) => element['id'] == int.parse(id));
     } catch (e) {
       isLoading.value = false;
     } finally {
