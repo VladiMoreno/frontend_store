@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend_store/common/styles/custom_text.style.dart';
+import 'package:frontend_store/common/widgets/close_session.view.dart';
 import 'package:frontend_store/common/widgets/layout.view.dart';
 import 'package:frontend_store/common/widgets/loading.view.dart';
+import 'package:frontend_store/common/widgets/return_home.view.dart';
 import 'package:frontend_store/utils/get_size.util.dart';
+import 'package:frontend_store/utils/get_storage.util.dart';
 import 'package:get/get.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
@@ -53,6 +56,8 @@ class _ScannerViewState extends State<ScannerView> {
 
   @override
   Widget build(BuildContext context) {
+    String? userType = StorageService().storage.read('user_type');
+
     return Obx(
       () => widget.controller.isLoading.isTrue
           ? const LoadingView()
@@ -61,6 +66,12 @@ class _ScannerViewState extends State<ScannerView> {
                 padding: const EdgeInsets.symmetric(vertical: 30),
                 child: Column(
                   children: [
+                    if (userType == '1') ...[
+                      const ReturnHomeView(),
+                    ],
+                    if (userType == '2') ...[
+                      const CloseSessionView(),
+                    ],
                     const SizedBox(height: 25),
                     InkWell(
                       onTap: () async {

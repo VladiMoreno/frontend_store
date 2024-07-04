@@ -55,7 +55,7 @@ class _HomeViewState extends State<HomeView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                width: GetSize.width * .2,
+                                width: GetSize.width * .4,
                                 child: CustomText(
                                   text: info['name'],
                                 ),

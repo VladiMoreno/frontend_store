@@ -4,6 +4,7 @@ import 'package:frontend_store/common/widgets/forms/text.input.dart';
 import 'package:frontend_store/common/widgets/layout.view.dart';
 import 'package:frontend_store/common/widgets/loading.view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend_store/common/widgets/return_home.view.dart';
 import 'package:frontend_store/config/env.config.dart';
 import 'package:frontend_store/constants/type_notification.constants.dart';
 import 'package:frontend_store/utils/get_size.util.dart';
@@ -54,28 +55,7 @@ class _ProductViewState extends State<ProductView> {
                 margin: const EdgeInsets.symmetric(vertical: 15),
                 child: Column(
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 20,
-                        bottom: 20,
-                      ),
-                      padding: const EdgeInsets.only(left: 20),
-                      width: GetSize.width,
-                      height: 25,
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: () {
-                          Get.toNamed('/dashboard');
-                        },
-                        child: const Row(
-                          children: [
-                            FaIcon(FontAwesomeIcons.arrowLeftLong),
-                            SizedBox(width: 15),
-                            CustomText(text: 'Volver'),
-                          ],
-                        ),
-                      ),
-                    ),
+                    const ReturnHomeView(),
                     InkWell(
                       onTap: () {
                         showDialog(
@@ -138,7 +118,8 @@ class _ProductViewState extends State<ProductView> {
                                 const SizedBox(height: 10),
                                 const CustomText(text: 'Precio del producto:'),
                                 CustomText(
-                                    text: '\$${info['price'].toString()}'),
+                                  text: '\$${info['price'].toString()}',
+                                ),
                                 const SizedBox(height: 25),
                                 Row(
                                   mainAxisAlignment:

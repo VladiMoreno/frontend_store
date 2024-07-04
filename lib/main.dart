@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
     return ResponsiveWrapper(
       child: GetMaterialApp(
         title: 'STORE - Vladimir Moreno',
-        initialRoute: '/dashboard',
+        initialRoute: '/login',
         getPages: AppRoutes.routes,
         unknownRoute: GetPage(
           name: '/home',

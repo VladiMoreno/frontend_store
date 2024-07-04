@@ -1,7 +1,7 @@
 //
 const getPurchases = 'carts';
 const addPurchase = 'carts';
-const getDetailPurchase = 'carts/{id_cart}';
+const getDetailPurchaseURL = 'carts/{id_cart}';
 //
 const getProducts = 'products';
 const addProducts = 'products';

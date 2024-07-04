@@ -1,9 +1,13 @@
+import 'package:frontend_store/middlewares/admin.middleware.dart';
+import 'package:frontend_store/middlewares/general.middleware.dart';
+import 'package:frontend_store/middlewares/login.middleware.dart';
 import 'package:frontend_store/middlewares/navigator.middleware.dart';
+import 'package:frontend_store/modules/carts/carts.view.dart';
 import 'package:frontend_store/modules/dashboard/dashboard.view.dart';
 import 'package:frontend_store/modules/home/home.view.dart';
+import 'package:frontend_store/modules/login/login.view.dart';
 import 'package:frontend_store/modules/products/product.view.dart';
 import 'package:frontend_store/modules/scanner/scanner.view.dart';
-import 'package:frontend_store/modules/users/user.view.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -11,7 +15,8 @@ class AppRoutes {
   static const scanner = '/scanner';
   static const dashboard = '/dashboard';
   static const products = '/products';
-  static const users = '/users';
+  static const carts = '/carts';
+  static const login = '/login';
 
   static List<GetPage> routes = [
     GetPage(
@@ -19,32 +24,38 @@ class AppRoutes {
       page: () => HomeView(),
     ),
     GetPage(
+      name: login,
+      page: () => const LoginView(),
+      middlewares: [
+        //NavigatorMiddleware(),
+        LoginMiddleware(),
+      ],
+    ),
+    GetPage(
       name: scanner,
       page: () => ScannerView(),
-      /*middlewares: [
-        NavigatorMiddleware(),
-      ],*/
+      middlewares: [
+        //NavigatorMiddleware(),
+        GeneralMiddleware(),
+      ],
     ),
     GetPage(
       name: dashboard,
       page: () => DashboardView(),
-      /*middlewares: [
-        NavigatorMiddleware(),
-      ],*/
-    ),
-    GetPage(
-      name: products,
-      page: () => ProductView(),
-      /*middlewares: [
-        NavigatorMiddleware(),
-      ],*/
-    ),
-    GetPage(
-      name: users,
-      page: () => UserView(),
-      /*middlewares: [
-        NavigatorMiddleware(),
-      ],*/
+      middlewares: [
+        //NavigatorMiddleware(),
+        AdminMiddleware(),
+      ],
+      children: [
+        GetPage(
+          name: products,
+          page: () => ProductView(),
+        ),
+        GetPage(
+          name: carts,
+          page: () => CartsView(),
+        ),
+      ],
     ),
   ];
 }
