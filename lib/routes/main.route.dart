@@ -27,7 +27,7 @@ class AppRoutes {
       name: login,
       page: () => const LoginView(),
       middlewares: [
-        //NavigatorMiddleware(),
+        NavigatorMiddleware(),
         LoginMiddleware(),
       ],
     ),
@@ -35,7 +35,7 @@ class AppRoutes {
       name: scanner,
       page: () => ScannerView(),
       middlewares: [
-        //NavigatorMiddleware(),
+        NavigatorMiddleware(),
         GeneralMiddleware(),
       ],
     ),
@@ -43,7 +43,7 @@ class AppRoutes {
       name: dashboard,
       page: () => DashboardView(),
       middlewares: [
-        //NavigatorMiddleware(),
+        NavigatorMiddleware(),
         AdminMiddleware(),
       ],
       children: [
