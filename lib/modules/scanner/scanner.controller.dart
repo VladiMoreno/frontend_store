@@ -1,3 +1,6 @@
+import 'package:frontend_store/constants/type_notification.constants.dart';
+import 'package:frontend_store/utils/catch_error.util.dart';
+import 'package:frontend_store/utils/notifications.util.dart';
 import 'package:get/get.dart';
 
 import 'scanner.services.dart';
@@ -19,6 +22,9 @@ class ScannerController extends GetxController {
       return response;
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -30,9 +36,19 @@ class ScannerController extends GetxController {
 
       final response = await service.finishPurchase(info);
 
+      Notifications(
+        typeProcess: TypeNotification.simpleNotification,
+        typeNotification: 'success',
+        titleNotification: 'Éxito!',
+        textNotification: 'Venta realizada',
+      );
+
       return response;
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+      );
     } finally {
       isLoading.value = false;
     }

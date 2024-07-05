@@ -1,5 +1,8 @@
 import 'package:frontend_store/config/states.config.dart';
 import 'package:frontend_store/constants/actions_state.constants.dart';
+import 'package:frontend_store/constants/type_notification.constants.dart';
+import 'package:frontend_store/utils/catch_error.util.dart';
+import 'package:frontend_store/utils/notifications.util.dart';
 import 'package:get/get.dart';
 
 import 'product.service.dart';
@@ -22,6 +25,12 @@ class ProductController extends GetxController {
       super.onReady();
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+        function: () {
+          Get.offNamed('/home');
+        },
+      );
     } finally {
       AppStates().productState.action(initialize, []);
       isLoading.value = false;
@@ -36,8 +45,18 @@ class ProductController extends GetxController {
 
       info.insert(0, response);
       info.refresh();
+
+      Notifications(
+        typeProcess: TypeNotification.simpleNotification,
+        typeNotification: 'success',
+        titleNotification: 'Éxito!',
+        textNotification: 'Producto agregado',
+      );
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -57,8 +76,18 @@ class ProductController extends GetxController {
       }
 
       info.refresh();
+
+      Notifications(
+        typeProcess: TypeNotification.simpleNotification,
+        typeNotification: 'success',
+        titleNotification: 'Éxito!',
+        textNotification: 'Producto actualizado',
+      );
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -71,8 +100,18 @@ class ProductController extends GetxController {
       await service.removeProductInformation(id);
 
       info.removeWhere((element) => element['id'] == int.parse(id));
+
+      Notifications(
+        typeProcess: TypeNotification.simpleNotification,
+        typeNotification: 'success',
+        titleNotification: 'Éxito!',
+        textNotification: 'Producto eliminado',
+      );
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+      );
     } finally {
       isLoading.value = false;
     }

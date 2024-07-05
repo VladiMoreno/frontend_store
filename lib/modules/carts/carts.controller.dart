@@ -1,3 +1,4 @@
+import 'package:frontend_store/utils/catch_error.util.dart';
 import 'package:get/get.dart';
 
 import 'carts.services.dart';
@@ -19,6 +20,12 @@ class CartsController extends GetxController {
       super.onReady();
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+        function: () {
+          Get.offNamed('/home');
+        },
+      );
     } finally {
       isLoading.value = false;
     }
@@ -31,6 +38,9 @@ class CartsController extends GetxController {
       return await service.getDetailPurchase(id);
     } catch (e) {
       isLoading.value = false;
+      CatchErrorManagement(
+        error: e,
+      );
     } finally {
       isLoading.value = false;
     }

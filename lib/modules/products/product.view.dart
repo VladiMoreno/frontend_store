@@ -326,10 +326,9 @@ class ModalProduct extends StatelessWidget {
                               "name": nameController.value.text.toString(),
                               "price": priceController.value.text.toString()
                             };
-                            await function!(info);
-
                             cleanParameters();
                             Navigator.of(context).pop();
+                            await function!(info);
                           }
                         },
                         child: Container(
